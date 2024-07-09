@@ -1,5 +1,0 @@
-requests
-clouddrive
-python-alist
-python-qbittorrent
-watchdog[watchmedo]
