@@ -161,7 +161,7 @@ def slink_file(file_path, logger, retry=True, times=2):
     """
     basename = os.path.basename(file_path)
     try:
-        save_slink_path = file_path.replace(mount_path, strm_path)
+        save_slink_path = file_path.replace(mount_path, slink_path)
         if not os.path.exists(file_path):
             logger.put(f"软链接：源文件不存在 - {file_path}")
             return "fnf", f"软链接：源文件不存在 - {basename}"
@@ -419,11 +419,11 @@ if __name__ == "__main__":
             time.sleep(1)
         item['创建 STRM'] = f"{rs[0]}个"
         item['创建软链接'] = f"{rs1[0]}个"
-        item['下载元数据'] = f"{rs1[1]}个"
         item['STRM 跳过'] = f"{rs[2]}个"
         item['软链接跳过'] = f"{rs1[2]}个"
         item['STRM 错误'] = f"{rs[3]}个"
-        item['软链错误'] = f"{rs1[3]}个"
+        item['软链接错误'] = f"{rs1[3]}个"
+        item['下载元数据'] = f"{rs1[1]}个"
         digest_content = f"创建 STRM：{rs[0]}个\n下载元数据：{rs[1]}个\n跳过文件：{rs[2]}个\n错误文件：{rs[3]}个\n\n创建软链接：{rs[0]}个\n下载元数据：{rs[1]}个\n跳过文件：{rs[2]}个\n错误文件：{rs[3]}个\n"
         if rs[4] or rs1[4]:
             info_content = f"{rs[4]}\n{rs1[4]}"

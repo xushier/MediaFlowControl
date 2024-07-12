@@ -415,7 +415,7 @@ class FileInfo:
                     sl = cd2_slink(nas_mount_file_path, nas_slink_file_path, file_extension, file_path, self.logger)
                     if isinstance(sl, tuple):
                         link_error += 1
-                        error_info += f"{r[1]}\n"
+                        error_info += f"{sl[1]}\n"
                     elif sl == "slink":
                         slk += 1
                     elif sl == "metadata":
@@ -429,7 +429,7 @@ class FileInfo:
                     st = cd2_strm(nas_mount_file_path, nas_strm_file_path, file_extension, file_path, self.logger)
                     if isinstance(st, tuple):
                         link_error += 1
-                        error_info += f"{r[1]}\n"
+                        error_info += f"{st[1]}\n"
                     elif st == "strm":
                         strm += 1
                     elif st == "metadata":
@@ -443,7 +443,7 @@ class FileInfo:
                     sl = cd2_slink(nas_mount_file_path, nas_slink_file_path, file_extension, file_path, self.logger)
                     if isinstance(sl, tuple):
                         link_error += 1
-                        error_info += f"{r[1]}\n"
+                        error_info += f"{sl[1]}\n"
                     elif sl == "slink":
                         slk += 1
                     elif sl == "metadata":
@@ -456,7 +456,7 @@ class FileInfo:
                     st = cd2_strm(nas_mount_file_path, nas_strm_file_path, file_extension, file_path, self.logger)
                     if isinstance(st, tuple):
                         link_error += 1
-                        error_info += f"{r[1]}\n"
+                        error_info += f"{st[1]}\n"
                     elif st == "strm":
                         strm += 1
                     elif st == "metadata":

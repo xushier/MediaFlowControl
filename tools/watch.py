@@ -127,37 +127,48 @@ def process_file_change(q, logger):
                             dl_to_path(event.src_path, slink_path)
                         if not strm_path:
                             dl_to_path(event.src_path, strm_path)
+                logger.put(f"元数据下载完成：{os.path.basename(event.src_path)}")
                 wecom_app("【实时监控】\n", f"下载元数据：\n{os.path.basename(event.src_path)}", "", False)
             else:
                 cloud_path = event.src_path.replace(nas_hlink_root_path, cd2_cloud_root_path)
+                retry = 5
+                time.sleep(3)
                 try:
-                    cd2.uplist = cd2.cd2.upload_tasklist.list()
+                    upload_count = cd2.cd2.GetUploadFileCount().fileCount
+                    if upload_count > 150:
+                        page = upload_count // 50
+                        filelist = cd2.task.list(page=page, page_size=50)
+                        filelist.extend(cd2.task.list(page=page-1, page_size=50))
+                        filelist.extend(cd2.task.list(page=page-2, page_size=50))
+                    else:
+                        filelist = cd2.task.list()
+                    cd2.uplist = filelist
                     d = cd2.file_exists_in_upload_list(cloud_path)
                 except:
                     logger.put("监测到程序异常，请检查！")
                     sys.exit(1)
-                while not d[0]:
-                    logger.put(f"监测到文件状态：文件不在上传列表，等待中······")
+                while not d[0] and retry:
+                    retry -= 1
+                    logger.put(f"监测到文件状态：文件不在上传列表，等待中···剩余重试次数：{retry}")
                     time.sleep(5)
-                    cd2.uplist = cd2.cd2.upload_tasklist.list()
+                    upload_count = cd2.cd2.GetUploadFileCount().fileCount
+                    if upload_count > 150:
+                        page = upload_count // 50
+                        filelist = cd2.task.list(page=page, page_size=50)
+                        filelist.extend(cd2.task.list(page=page-1, page_size=50))
+                        filelist.extend(cd2.task.list(page=page-2, page_size=50))
+                    else:
+                        filelist = cd2.task.list()
+                    cd2.uplist = filelist
                     d = cd2.file_exists_in_upload_list(cloud_path)
-                logger.put(f"监测到文件状态：文件已在上传列表，上传状态为：{cd2.upstat[d[1]]}")  
-                cd2.task.pause(cloud_path)
-                logger.put("暂停该上传任务。\n")
-                wecom_app("【实时监控】\n", f"暂停上传任务：\n{os.path.basename(event.src_path)}", "", False)
-
-
-def log_writer(log_queue, logger):
-    while True:
-        try:
-            log_entry = log_queue.get(block=True)
-            if log_entry is None:
-                break
-            logger.info(log_entry)
-            print(log_entry)
-        except Exception as e:
-            if str(e) != 'Empty':
-                raise
+                if d[0]:
+                    logger.put(f"监测到文件状态：文件已在上传列表，上传状态为：{cd2.upstat[d[1]]}")
+                    cd2.task.pause(cloud_path)
+                    logger.put("暂停该上传任务。\n")
+                    wecom_app("【实时监控】\n", f"暂停上传任务：\n{os.path.basename(event.src_path)}", "", False)
+                else:
+                    logger.put(f"已重试 5 次，未在上传列表发现文件，跳过该文件。请检查 CD2 监控是否开启！\n")
+                    wecom_app("【实时监控】\n", f"已重试 5 次，未在上传列表发现文件，跳过该文件。请检查 CD2 备份任务开关是否打开！", "", False)
 
 
 if __name__ == "__main__":
