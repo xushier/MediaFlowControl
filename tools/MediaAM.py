@@ -237,15 +237,7 @@ class FileInfo:
                         file_program_type = "Series"
                         size_byte = file_program_size
 
-
                     upload_after_time = self.uptime(file_name, size_byte)
-                    # 确定是否上传
-                    if file_create_before_hour >= upload_after_time:
-                        file_allow_upload = True
-                    else:
-                        file_allow_upload = False
-
-
 
                     # QB 分类
                     if meta_match:
@@ -331,6 +323,10 @@ class FileInfo:
                             else:
                                 new_control_dict[cd2_cloud_file_path] = {'process_count': process_count, 'upload_time': upload_after_time}
 
+                    if file_create_before_hour >= upload_after_time:
+                        file_allow_upload = True
+                    else:
+                        file_allow_upload = False
 
                     file_info_extra = {
                         'cd2_cloud_file_path': cd2_cloud_file_path,
@@ -610,6 +606,7 @@ class FileInfo:
             if upload_file_status == 'Error' or upload_file_status == 'FatalError':
                 try:
                     self.cd2.fs.move(cd2_hlink_file_path, cd2_cloud_file_path)
+                    time.sleep(1)
                     self.cd2.task.pause(cd2_cloud_file_path)
                     error_add += 1
                     if file_program_type == "Movie":
@@ -619,12 +616,11 @@ class FileInfo:
                     self.logger.put(f"上传任务控制：重新添加错误：{e}")
                 continue
 
-
             if file_allow_uploaded:
                 if upload_file_status == 'Transfer' or upload_file_status == 'Inqueue':
                     try:
                         self.cd2.fs.move(cd2_hlink_file_path, cd2_cloud_file_path)
-                        time.sleep(0.2)
+                        time.sleep(1)
                         self.cd2.task.pause(cd2_cloud_file_path)
                         self.logger.put(f"上传任务控制：该文件大小 {file_size_human}，创建于 {file_create_before_hour} 小时前，规定时间 {upload_after_time} 小时，已允许上传，但是首传，重新添加并暂停：{file_name}")
                         count_pause += 1
@@ -644,7 +640,7 @@ class FileInfo:
                 if upload_file_status == 'Transfer' or upload_file_status == 'Inqueue':
                     try:
                         self.cd2.fs.move(cd2_hlink_file_path, cd2_cloud_file_path)
-                        time.sleep(0.2)
+                        time.sleep(1)
                         self.cd2.task.pause(cd2_cloud_file_path)
                         self.logger.put(f"上传任务控制：该文件大小 {file_size_human}，创建于 {file_create_before_hour} 小时前，规定时间 {upload_after_time} 小时，不允许上传，且是首传，重新添加并暂停：{file_name}")
                         count_reload += 1
