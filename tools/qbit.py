@@ -2,7 +2,7 @@
 # _*_ coding:utf-8 _*_
 """
 new Env('小迪 - QB 自动化删除');
-0 9,21 * * * qbit.py
+30 17 * * * qbit.py
 """
 
 import re
