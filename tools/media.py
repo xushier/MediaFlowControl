@@ -849,7 +849,7 @@ class FileInfo:
 
 if __name__ == "__main__":
 
-    logger = Log("MediaAM-log", "MediaAM").logger
+    logger = Log("media-log", "media").logger
     log_queue  = Queue()
     log_thread = Thread(target=log_writer, args=(log_queue, logger))
     log_thread.start()
