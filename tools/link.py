@@ -258,7 +258,7 @@ def cd2_slink(file_mount_path, file_slink_path, file_ext, file_path, logger, ret
                     os.symlink(file_mount_path, file_slink_path)
                     logger.put(f"软链接：视频 - {file_slink_path}")
                     return "slink"
-                elif ext in mdata_ext:
+                elif file_ext in mdata_ext:
                     try:
                         dl_to_path(file_path, file_slink_path)
                     except:

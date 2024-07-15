@@ -25,6 +25,7 @@ from __config import *
 from check import check_connect
 from link import cd2_strm, cd2_slink
 from qbit import QB
+from emby import EmbyRefresh
 
 
 def log_writer(log_queue, logger):
@@ -55,6 +56,7 @@ class FileInfo:
 
         self.cd2 = CD2()
         self.qb  = QB(self.logger)
+        self.emby = EmbyRefresh()
     
         self.notify_content = []
         self.notify_info    = "相关项目：<br>"
@@ -210,7 +212,10 @@ class FileInfo:
                     if not local_exists_in_remote and not local_exists_in_upload_list and ( chinese_name_filter(file_name) or meta_match ):
                         cd2_parent_path = os.path.dirname(cd2_cloud_file_path)
                         self.cd2.fs.makedirs(cd2_parent_path, exist_ok=True)
-                        self.cd2.fs.move(cd2_hlink_file_path, cd2_cloud_file_path)
+                        try:
+                            self.cd2.fs.move(cd2_hlink_file_path, cd2_cloud_file_path)
+                        except Exception as e:
+                            self.logger.put(f"初始化程序：重新添加错误：{e}")
                         self.logger.put(f"初始化程序：该文件未上传，上传：{file_name}")
                         local_exists_in_upload_list, upload_file_status = self.cd2.file_exists_in_upload_list(cd2_cloud_file_path)
                     
@@ -258,11 +263,14 @@ class FileInfo:
                         if match:
                             series_name = match.group(1)
                             series_year = match.group(2)
+                            series_tmdb = match.group(3)
                         else:
-                            series_name = "未知"
-                            series_year = "未知"
+                            series_name = None
+                            series_year = None
+                            series_tmdb = None
                         file_info['series_name'] = series_name
                         file_info['series_year'] = series_year
+                        file_info['series_tmdb'] = series_tmdb
                         if not chinese_name_filter(file_name):
                             qb_sort = f"请重新刮削-{series_year}-{file_program_subtype}-{series_name}"
                         else:
@@ -277,11 +285,14 @@ class FileInfo:
                         if match:
                             movies_name = match.group(1)
                             movies_year = match.group(2)
+                            movies_tmdb = match.group(3)
                         else:
-                            movies_name = "未知"
-                            movies_year = "未知"
+                            movies_name = None
+                            movies_year = None
+                            movies_tmdb = None
                         file_info['movies_name'] = movies_name
                         file_info['movies_year'] = movies_year
+                        file_info['movies_tmdb'] = movies_tmdb
                         if not chinese_name_filter(file_name):
                             qb_sort = f"请重新刮削-{movies_year}-{file_program_subtype}-{movies_name}"
                         else:
@@ -382,6 +393,7 @@ class FileInfo:
         error_info = ""
         slk, slm, strm, stm, skip, de, scrap_add, link_error = 0, 0, 0, 0, 0, 0, 0, 0
         linked_program = ""
+        refresh_items  = []
         for fi in uploaded_list:
             file_name             = fi['file_name']
             file_parent_path      = fi['file_parent_path']
@@ -405,7 +417,7 @@ class FileInfo:
                 # self.hlink_inode_sort_dict[file_inode] = new_qs
                 self.logger.put(f"链接和删除：该文件已上传，但可能刮削错误，删除各端视频和元数据，分类：{qb_sort}，{file_name}")
                 scrap_add += 1
-                if file_program_name not in linked_program and file_extension in media_ext:
+                if qb_sort not in linked_program and file_extension in media_ext:
                     linked_program += f"{qb_sort}<br>"
                 continue
 
@@ -467,7 +479,7 @@ class FileInfo:
                     skip += 1
 
             # 记录
-            if file_program_name not in linked_program and file_extension in media_ext:
+            if qb_sort not in linked_program and file_extension in media_ext:
                 linked_program += f"{qb_sort}<br>"
 
             # 删除
@@ -479,6 +491,42 @@ class FileInfo:
                 if folder_size == 0 and os.path.isdir(file_parent_path) and not os.listdir(file_parent_path):
                     os.rmdir(file_parent_path)
                     de += 1
+
+            if qb_sort != "元数据" and file_size_byte > 10485760:
+                if link_emby_refresh == "slink":
+                    refresh_path = fi['file_program_path'].replace(nas_hlink_root_path, nas_slink_root_path)
+                if link_emby_refresh == "strm":
+                    refresh_path = fi['file_program_path'].replace(nas_hlink_root_path, nas_strm_root_path)
+
+                if fi['file_program_type'] == "Series":
+                    refresh_item = {
+                        'type': fi['file_program_type'],
+                        'name': fi['series_name'],
+                        'year': fi['series_year'],
+                        'tmdb': fi['series_tmdb'],
+                        'sort': fi['file_program_subtype'],
+                        'link_path': refresh_path
+                    }
+                    if refresh_item not in refresh_items:
+                        refresh_items.append(refresh_item)
+                        self.logger.put(f"记录刷新：{fi['series_name']} - {fi['series_year']} - tmdb={fi['series_tmdb']} - {fi['file_program_type']} - {fi['file_program_subtype']} - {refresh_path}")
+                else:
+                    refresh_item = {
+                        'type': fi['file_program_type'],
+                        'name': fi['movies_name'],
+                        'year': fi['movies_year'],
+                        'tmdb': fi['movies_tmdb'],
+                        'sort': fi['file_program_subtype'],
+                        'link_path': refresh_path
+                    }
+                    if refresh_item not in refresh_items:
+                        refresh_items.append(refresh_item)
+                        self.logger.put(f"记录刷新：{fi['movies_name']} - {fi['movies_year']} - tmdb={fi['movies_tmdb']} - {fi['file_program_type']} - {fi['file_program_subtype']} - {refresh_path}")
+
+
+        self.logger.put(f"链接和删除：开始媒体库刷新···")
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            e = executor.submit(self.emby.refresh_library_by_items, refresh_items)
 
         self.logger.put(f"--------------------链删已完成--------------------\n")
 
@@ -547,7 +595,7 @@ class FileInfo:
                 # self.hlink_inode_sort_dict[file_inode] = new_qs
                 self.logger.put(f"上传任务控制：该文件正在上传，但可能刮削错误，取消该上传任务，删除各端视频和元数据，分类：{qb_sort}，{file_name}")
                 scrap_add += 1
-                if file_program_name not in linked_program:
+                if qb_sort not in linked_program:
                     linked_program += f"{qb_sort}<br>"
                 continue
 
@@ -560,24 +608,30 @@ class FileInfo:
                 continue
 
             if upload_file_status == 'Error' or upload_file_status == 'FatalError':
-                self.cd2.fs.move(cd2_hlink_file_path, cd2_cloud_file_path)
-                self.cd2.task.pause(cd2_cloud_file_path)
-                error_add += 1
-                if file_program_type == "Movie":
-                    self.hlink_inode_sort_dict[file_inode] = f"上传{self.cd2.upstat['Pause']}-{movies_year}-{file_program_subtype}-{movies_name}"
-                self.logger.put(f"上传任务控制：该文件上传遇到错误，重新添加并暂停：{file_name}")
+                try:
+                    self.cd2.fs.move(cd2_hlink_file_path, cd2_cloud_file_path)
+                    self.cd2.task.pause(cd2_cloud_file_path)
+                    error_add += 1
+                    if file_program_type == "Movie":
+                        self.hlink_inode_sort_dict[file_inode] = f"上传{self.cd2.upstat['Pause']}-{movies_year}-{file_program_subtype}-{movies_name}"
+                    self.logger.put(f"上传任务控制：该文件上传遇到错误，重新添加并暂停：{file_name}")
+                except Exception as e:
+                    self.logger.put(f"上传任务控制：重新添加错误：{e}")
                 continue
 
 
             if file_allow_uploaded:
                 if upload_file_status == 'Transfer' or upload_file_status == 'Inqueue':
-                    self.cd2.fs.move(cd2_hlink_file_path, cd2_cloud_file_path)
-                    time.sleep(0.2)
-                    self.cd2.task.pause(cd2_cloud_file_path)
-                    self.logger.put(f"上传任务控制：该文件大小 {file_size_human}，创建于 {file_create_before_hour} 小时前，规定时间 {upload_after_time} 小时，已允许上传，但是首传，重新添加并暂停：{file_name}")
-                    count_pause += 1
-                    if file_program_type == "Movie":
-                        self.hlink_inode_sort_dict[file_inode] = f"上传{self.cd2.upstat['Pause']}-{movies_year}-{file_program_subtype}-{movies_name}"
+                    try:
+                        self.cd2.fs.move(cd2_hlink_file_path, cd2_cloud_file_path)
+                        time.sleep(0.2)
+                        self.cd2.task.pause(cd2_cloud_file_path)
+                        self.logger.put(f"上传任务控制：该文件大小 {file_size_human}，创建于 {file_create_before_hour} 小时前，规定时间 {upload_after_time} 小时，已允许上传，但是首传，重新添加并暂停：{file_name}")
+                        count_pause += 1
+                        if file_program_type == "Movie":
+                            self.hlink_inode_sort_dict[file_inode] = f"上传{self.cd2.upstat['Pause']}-{movies_year}-{file_program_subtype}-{movies_name}"
+                    except Exception as e:
+                        self.logger.put(f"上传任务控制：重新添加错误：{e}")
                 elif upload_file_status == 'Pause':
                     self.cd2.task.resume(cd2_cloud_file_path)
                     self.logger.put(f"上传任务控制：该文件大小 {file_size_human}，创建于 {file_create_before_hour} 小时前，规定时间 {upload_after_time} 小时，已允许上传，但是暂停，继续该任务：{file_name}")
@@ -585,16 +639,19 @@ class FileInfo:
                     if file_program_type == "Movie":
                         self.hlink_inode_sort_dict[file_inode] = f"上传{self.cd2.upstat['Preprocessing']}-{movies_year}-{file_program_subtype}-{movies_name}"
                 else:
-                    self.logger.put(f"上传任务控制：该文件大小 {file_size_human}，创建于 {file_create_before_hour} 小时前，规定时间 {upload_after_time} 小时，正在处理中，继续处理：{file_name}")
+                    self.logger.put(f"上传任务控制：该文件大小 {file_size_human}，创建于 {file_create_before_hour} 小时前，规定时间 {upload_after_time} 小时，已允许上传，继续处理：{file_name}")
             else:
                 if upload_file_status == 'Transfer' or upload_file_status == 'Inqueue':
-                    self.cd2.fs.move(cd2_hlink_file_path, cd2_cloud_file_path)
-                    time.sleep(0.2)
-                    self.cd2.task.pause(cd2_cloud_file_path)
-                    self.logger.put(f"上传任务控制：该文件大小 {file_size_human}，创建于 {file_create_before_hour} 小时前，规定时间 {upload_after_time} 小时，不允许上传，且是首传，重新添加并暂停：{file_name}")
-                    count_reload += 1
-                    if file_program_type == "Movie":
-                        self.hlink_inode_sort_dict[file_inode] = f"上传{self.cd2.upstat['Pause']}-{movies_year}-{file_program_subtype}-{movies_name}"
+                    try:
+                        self.cd2.fs.move(cd2_hlink_file_path, cd2_cloud_file_path)
+                        time.sleep(0.2)
+                        self.cd2.task.pause(cd2_cloud_file_path)
+                        self.logger.put(f"上传任务控制：该文件大小 {file_size_human}，创建于 {file_create_before_hour} 小时前，规定时间 {upload_after_time} 小时，不允许上传，且是首传，重新添加并暂停：{file_name}")
+                        count_reload += 1
+                        if file_program_type == "Movie":
+                            self.hlink_inode_sort_dict[file_inode] = f"上传{self.cd2.upstat['Pause']}-{movies_year}-{file_program_subtype}-{movies_name}"
+                    except Exception as e:
+                        self.logger.put(f"上传任务控制：重新添加错误：{e}")
                 elif upload_file_status == 'Preprocessing' or upload_file_status == 'WaitingforPreprocessing':
                     self.cd2.task.pause(cd2_cloud_file_path)
                     self.logger.put(f"上传任务控制：该文件大小 {file_size_human}，创建于 {file_create_before_hour} 小时前，规定时间 {upload_after_time} 小时，不允许上传，正在处理中，暂停该任务：{file_name}")

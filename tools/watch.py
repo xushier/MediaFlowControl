@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # _*_ coding:utf-8 _*_
 """
-new Env('小迪 - 实时监控');
+new Env('小迪 - 硬链文件实时监控');
 0 21 * * * watch.py
 """
 
@@ -118,15 +118,16 @@ def process_file_change(q, logger):
                             dl_to_path(event.src_path, strm_path)
                 except:
                     mount_path = event.src_path.replace(nas_hlink_root_path, nas_mount_root_path)
-                    if part_link_mode == "slink" and not slink_exist:
-                        dl_to_path(event.src_path, slink_path)
-                    if part_link_mode == "strm" and not strm_exist:
-                        dl_to_path(event.src_path, strm_path)
-                    if part_link_mode == "both":
-                        if not slink_exist:
+                    if os.path.exists(mount_path):
+                        if part_link_mode == "slink" and not slink_exist:
                             dl_to_path(event.src_path, slink_path)
-                        if not strm_path:
+                        if part_link_mode == "strm" and not strm_exist:
                             dl_to_path(event.src_path, strm_path)
+                        if part_link_mode == "both":
+                            if not slink_exist:
+                                dl_to_path(event.src_path, slink_path)
+                            if not strm_path:
+                                dl_to_path(event.src_path, strm_path)
                 logger.put(f"元数据下载完成：{os.path.basename(event.src_path)}")
                 wecom_app("【实时监控】\n", f"下载元数据：\n{os.path.basename(event.src_path)}", "", False)
             else:
@@ -169,6 +170,19 @@ def process_file_change(q, logger):
                 else:
                     logger.put(f"已重试 5 次，未在上传列表发现文件，跳过该文件。请检查 CD2 监控是否开启！\n")
                     wecom_app("【实时监控】\n", f"已重试 5 次，未在上传列表发现文件，跳过该文件。请检查 CD2 备份任务开关是否打开！", "", False)
+
+
+def log_writer(log_queue, logger):
+    while True:
+        try:
+            log_entry = log_queue.get(block=True)
+            if log_entry is None:
+                break
+            logger.info(log_entry)
+            print(log_entry)
+        except Exception as e:
+            if str(e) != 'Empty':
+                raise
 
 
 if __name__ == "__main__":

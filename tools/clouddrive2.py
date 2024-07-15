@@ -195,6 +195,13 @@ if __name__ == "__main__":
         ("库目录数", ct[2])
     ]
 
+    if cd2['updateLog']:
+        info_judge = True
+        info_content = cd2['updateLog']
+    else:
+        info_judge = False
+        info_content = ""
+
     logger.info(item)
     logger.info("\n")
     print(item)
@@ -208,7 +215,7 @@ if __name__ == "__main__":
     head_color = "#593B8B"
     item_color_A = "#886ABC"
     item_color_B = "#684B99"
-    content = notify_template_col4(title, items, font_color, border_color, title_color, head_color, item_color_A, item_color_B)
+    content = notify_template_col4(title, items, font_color, border_color, title_color, head_color, item_color_A, item_color_B, info=info_judge, info_content=info_content, title1="项目", title2="数量(个)")
     digest = f"媒体库大小：{ct[0]}\n媒体库文件数：{ct[1]}\n媒体库文件夹数：{ct[2]}\n上传任务列表：{task[0]}\n暂停中任务：{task[1]}\n上传中任务：{task[2]}\n错误的任务：{task[3]}\n"
 
     wecom_app(title, content, digest)

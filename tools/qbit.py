@@ -133,7 +133,7 @@ class QB:
                 breakout = False
                 for keyword, hrtime in qb_domain_keyword.items():
                     if keyword in t['tracker'] or keyword in t['magnet_uri']:
-                        if seeding_time <= hrtime * 24:
+                        if seeding_time < hrtime * 24:
                             self.logger.put(f"{keyword}，{t['tags']}，{t['category']}, 做种 {seeding_time} 小时，不足 {hrtime * 24} 小时，暂不删除")
                             breakout = True
                             break

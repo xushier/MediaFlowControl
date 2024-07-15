@@ -21,6 +21,12 @@ xd_qb_url = "http://"
 xd_qb_usr = ""
 xd_qb_pwd = ""
 
+# Emby 信息。用于刷新 Emby 库。
+emby_url   = "http://"
+emby_token = ""
+# Emby 刷新路径。可选值：strm、slink
+link_emby_refresh = "strm"
+
 # CD2。CD2 信息。save_path 为 CD2 内的使用的 115 网盘的根路径。account_id 为对应账户的昵称。
 xd_cd2_url    = "http://"
 xd_cd2_usr    = ""
@@ -30,20 +36,20 @@ xd_account_id = "xxx"
 
 # Alist。环境检测任务的依赖项。
 # /d/ 后为 Alist 挂载路径，该路径后需要是和硬链结构一样的、包含电影/电视剧/动漫这样的文件夹。
-xd_alist_root_url  = "https://alist.xxx.com:xxx/d/媒体库挂载点"
+xd_alist_root_url  = "https://xxxx.xxx.xxx/d/媒体库挂载名字"
 xd_alist_url  = "http://"
 xd_alist_user = ""
 xd_alist_pwd  = ""
 
 # Path。各任务依赖项。
-nas_qbitt_root_path = "/mnt/cacheqb/Download/媒体库"    # QB下载根路径
+nas_qbitt_root_path = "/mnt/cache/Download/qb"    # QB下载根路径
 
-nas_hlink_root_path = "/mnt/cacheqb/Download/媒体库"    # 硬链接根路径
-nas_mount_root_path = "/mnt/cachedl/115/115(xiaodi)/媒体库"    # 挂载媒体库根路径
-cd2_hlink_root_path = "/Download/媒体库"     # 硬链接根路径
-cd2_cloud_root_path = "/115(xiaodi)/媒体库"    # CD2 内媒体库根路径
-nas_slink_root_path = "/mnt/cachedl/DLink/Symlink"    # 软链接媒体库根路径
-nas_strm_root_path  = "/mnt/cachedl/DLink/Strm"     # STRM 媒体库根路径
+nas_hlink_root_path = "/mnt/cache/Download/hlink"    # 硬链接根路径
+nas_mount_root_path = "/mnt/cache/115/115(xxx)/媒体库"    # 挂载媒体库根路径
+cd2_hlink_root_path = "/Download/hlink"     # 硬链接根路径
+cd2_cloud_root_path = "/115(xxx)/媒体库"    # CD2 内媒体库根路径
+nas_slink_root_path = "/mnt/cache/Link/slink"    # 软链接媒体库根路径
+nas_strm_root_path  = "/mnt/cache/Link/strm"     # STRM 媒体库根路径
 
 ############################################## 必填项 ################################################
 
@@ -75,15 +81,12 @@ xd_gid = 100
 xd_mod = 0o755
 
 # 全量链接模式。全量链接任务的依赖项。可选值：strm、slink、both。
-full_link_mode = "strm"
+full_link_mode = "both"
 # 全量链接时，链接进度的通知时间间隔。单位为秒，默认一个小时。
 notify_interval = 3600
 
 # 部分链接模式。一条龙任务内单文件的链接模式，值同上。
-part_link_mode = "strm"
-
-# Emby。To Do
-# emby_token = ""
+part_link_mode = "both"
 
 # 指定发布组做种时长，单位：天
 qb_domain_keyword = {
@@ -93,13 +96,13 @@ qb_domain_keyword = {
 
 # QB 失效种子 Tracker 信息关键词
 qb_error_tracker_keyword = [
-    "exist", "anned", "register", "音轨", "压制", "重新上传"
+    "exist", "anned", "register", "音轨", "压制", "重新上传", "Dupe"
 ]
 
 # 名称匹配正则
-movies_pattern = r'^(.*?)\s*\((\d{4})\)'
-series_pattern = r'^(.*?)\s*\((\d{4})\)'
-chinese_pattern = r'^(.*?) ?(S\d+E\d+|(?:\{|\[)tmdb(?:-|=)\d+(?:\}|\]))'
+movies_pattern = r'^(.*?)\s*\((\d{4})\)\s*(?:\{|\[)tmdb(?:id)?(?:-|=)(\d+)(?:\}|\])'
+series_pattern = r'^(.*?)\s*\((\d{4})\)\s*(?:\{|\[)tmdb(?:id)?(?:-|=)(\d+)(?:\}|\])'
+chinese_pattern = r'^(.*?) ?(S\d+E\d+|(?:\{|\[)tmdb(?:id)?(?:-|=)\d+(?:\}|\]))'
 
 # 链接文件扩展名
 media_ext = [
@@ -129,12 +132,14 @@ group_wait  = [
 # CD2 上传按文件大小的等待时长，单位：小时
 size_slice = [
     0, 1073741824, 5*1073741824, 10*1073741824, 20*1073741824, 
-    30*1073741824, 50*1073741824, 70*1073741824, 300*1073741824
+    30*1073741824, 50*1073741824, 70*1073741824, 300*1073741824, 
+    900*1073741824, 10000*1073741824
     ]
 
 size_wait  = [
     1, 3, 6, 10, 
-    15, 22, 30, 42
+    15, 22, 30, 42, 
+    66, 100
     ]
 
 ############################################## 自定义项 ##############################################
