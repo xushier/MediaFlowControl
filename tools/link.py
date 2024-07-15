@@ -18,7 +18,7 @@ from clouddrive2 import CD2
 from __notifier import wecom_app
 from __logger import Log
 from __utils import recursive_chmod, recursive_chown, format_seconds
-from xd_config import media_ext, mdata_ext, full_link_mode, nas_mount_root_path, nas_slink_root_path, nas_strm_root_path, xd_alist_root_url, xd_uid, xd_gid, xd_mod, notify_interval, notify_only_new
+from _Config import media_ext, mdata_ext, full_link_mode, nas_mount_root_path, nas_slink_root_path, nas_strm_root_path, xd_alist_root_url, xd_uid, xd_gid, xd_mod, notify_interval, notify_only_new
 
 
 mount_path = nas_mount_root_path

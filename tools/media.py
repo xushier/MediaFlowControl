@@ -21,7 +21,7 @@ from __notify_template import notify_template_col4
 from __notifier import wecom_app
 from __logger import Log
 from __utils import format_size, get_folder_byte_size, format_time, delete_more, chinese_name_filter
-from xd_config import *
+from _Config import *
 from check import check_connect
 from link import cd2_strm, cd2_slink
 from qbit import QB
@@ -63,9 +63,9 @@ class FileInfo:
         
 
         self.logger.put(f"--------------------初始化程序--------------------")
-        if os.path.exists("MediaAM.json"):
+        if os.path.exists("media.json"):
             try:
-                with open("MediaAM.json", "r", encoding="utf-8") as file:
+                with open("media.json", "r", encoding="utf-8") as file:
                     self.control_dict = json.load(file)
             except json.JSONDecodeError as e:
                 self.logger.put(f"初始化程序：解析JSON时出错: {e}")

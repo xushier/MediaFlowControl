@@ -10,7 +10,7 @@ import sys
 from clouddrive import CloudDriveClient
 from CloudDrive_pb2 import AddOfflineFileRequest, FileRequest, OfflineFileListAllRequest
 
-from xd_config import xd_cd2_url, xd_cd2_usr, xd_cd2_pwd, xd_save_path, xd_account_id, cd2_cloud_root_path
+from _Config import xd_cd2_url, xd_cd2_usr, xd_cd2_pwd, xd_save_path, xd_account_id, cd2_cloud_root_path
 from __notify_template import notify_template_col4
 from __notifier import wecom_app
 from __logger import Log

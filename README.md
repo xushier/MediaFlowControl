@@ -4,7 +4,7 @@
 
 1. 青龙添加订阅。粘贴如下内容：
 
-   `ql repo https://github.com/xushier/MediaFlowControl.git "tools/[a-zA-Z]+" "" "require|tools/__|xd_" "" "py|txt"`
+   `ql repo https://github.com/xushier/MediaFlowControl.git "tools/[a-z]+" "" "require|tools/__|_Conf" "" "py|txt"`
 
    添加完手动运行一次。
 
@@ -14,7 +14,7 @@
 
 4. 将订阅任务禁用，防止再次运行覆盖已经配置好的文件。或者将订阅改成如下格式忽略配置文件的更新：
 
-   `ql repo https://github.com/xushier/MediaFlowControl.git "tools/[a-zA-Z]+" "" "require|tools/__" "" "py|txt"`
+   `ql repo https://github.com/xushier/MediaFlowControl.git "tools/[a-z]+" "_Conf" "require|tools/__" "" "py|txt"`
 
 5. 按需要更改任务定时，或者禁用任务。
 
