@@ -7,7 +7,7 @@ import os
 import errno
 from datetime import datetime, timedelta
 
-from __config import chinese_pattern
+from xd_config import chinese_pattern
 
 
 DIVISORS = [1, 1024, 1024 ** 2, 1024 ** 3, 1024 ** 4, 1024 ** 5, 1024 ** 6]

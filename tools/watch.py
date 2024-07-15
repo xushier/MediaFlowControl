@@ -17,7 +17,7 @@ from watchdog.observers import Observer
 
 from clouddrive2 import CD2
 from link import dl_to_path
-from __config import part_link_mode, nas_mount_root_path, nas_hlink_root_path, nas_slink_root_path, nas_strm_root_path, cd2_cloud_root_path, mdata_ext
+from xd_config import part_link_mode, nas_mount_root_path, nas_hlink_root_path, nas_slink_root_path, nas_strm_root_path, cd2_cloud_root_path, mdata_ext
 from __utils import chinese_name_filter, delete_more
 from __logger import Log
 from __notifier import wecom_app

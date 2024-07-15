@@ -21,7 +21,7 @@ urllib3.disable_warnings(InsecureRequestWarning)
 
 from __notifier import wecom_app
 from __logger import Log
-from __config import emby_url, emby_token
+from xd_config import emby_url, emby_token
 logger = Log("emby-log", "emby").logger
 
 

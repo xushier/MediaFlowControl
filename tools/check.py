@@ -11,7 +11,7 @@ from queue import Queue
 from threading import Thread
 from clouddrive2 import CD2
 
-from __config import nas_mount_root_path
+from xd_config import nas_mount_root_path
 from __notify_template import notify_template
 from __notifier import wecom_app
 from __logger import Log

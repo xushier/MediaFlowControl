@@ -3,7 +3,7 @@
 
 import os
 from alist import AlistClient
-from __config import xd_alist_url, xd_alist_user, xd_alist_pwd, xd_alist_root_url
+from xd_config import xd_alist_url, xd_alist_user, xd_alist_pwd, xd_alist_root_url
 
 
 class Alist:

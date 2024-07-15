@@ -14,7 +14,7 @@ from threading import Thread
 from qbittorrent import Client
 
 
-from __config import xd_qb_url, xd_qb_usr, xd_qb_pwd, xd_qb_delete, xd_qb_delete_error, qb_error_tracker_keyword, qb_domain_keyword
+from xd_config import xd_qb_url, xd_qb_usr, xd_qb_pwd, xd_qb_delete, xd_qb_delete_error, qb_error_tracker_keyword, qb_domain_keyword
 from __logger import Log
 from __notifier import wecom_app
 from __notify_template import notify_template

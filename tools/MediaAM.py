@@ -21,7 +21,7 @@ from __notify_template import notify_template_col4
 from __notifier import wecom_app
 from __logger import Log
 from __utils import format_size, get_folder_byte_size, format_time, delete_more, chinese_name_filter
-from __config import *
+from xd_config import *
 from check import check_connect
 from link import cd2_strm, cd2_slink
 from qbit import QB
