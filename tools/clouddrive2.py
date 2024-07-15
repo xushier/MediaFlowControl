@@ -2,7 +2,7 @@
 # _*_ coding:utf-8 _*_
 """
 new Env('小迪 - CD2 信息检测');
-0 10,22 * * * clouddrive2.py
+30 15 * * * clouddrive2.py
 """
 
 import os
