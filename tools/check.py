@@ -2,7 +2,7 @@
 # _*_ coding:utf-8 _*_
 """
 new Env('小迪 - 环境检测');
-30 9,21 * * * check.py
+30 9 * * * check.py
 """
 
 import os
