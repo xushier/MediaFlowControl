@@ -4,7 +4,7 @@
 
 1. 青龙添加订阅。粘贴如下内容：
 
-   `ql repo https://github.com/xushier/MediaFlowControl.git "tools/[a-zA-Z]+" "" "require|tools/__" "py|txt"`
+   `ql repo https://github.com/xushier/MediaFlowControl.git "tools/[a-zA-Z]+" "" "require|tools/__" "" "py|txt"`
 
    添加完手动运行一次。
 
@@ -14,7 +14,7 @@
 
 4. 将订阅修改为
 
-   `ql repo https://github.com/xushier/MediaFlowControl.git "tools/[a-zA-Z]+" "tools/__config" "require|tools/__" "py|txt"`
+   `ql repo https://github.com/xushier/MediaFlowControl.git "tools/[a-zA-Z]+" "tools/__config" "require|tools/__" "" "py|txt"`
 
    也就是去掉 __config 文件，防止后续更新覆盖。
 
