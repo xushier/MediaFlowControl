@@ -74,11 +74,11 @@ class FileInfo:
 
         self.logger.put(f"初始化程序：获取硬链文件数据······")
         with ThreadPoolExecutor(max_workers=8) as executor:
-            h = executor.submit(self.get_files_info, nas_hlink_root_path, 7, "hlink")
+            h = executor.submit(self.get_files_info, nas_hlink_root_path, hlink_media_depth, "hlink")
 
         self.logger.put(f"初始化程序：获取 QB 文件数据······")
         with ThreadPoolExecutor(max_workers=8) as executor:
-            q = executor.submit(self.get_files_info, nas_qbitt_root_path, 6, "qb")
+            q = executor.submit(self.get_files_info, nas_qbitt_root_path, qbitt_media_depth, "qb")
 
         while True:
             if h.done() and q.done():
