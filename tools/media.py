@@ -519,10 +519,20 @@ class FileInfo:
                         refresh_items.append(refresh_item)
                         self.logger.put(f"记录刷新：{fi['movies_name']} - {fi['movies_year']} - tmdb={fi['movies_tmdb']} - {fi['file_program_type']} - {fi['file_program_subtype']} - {refresh_path}")
 
+        if refresh_items:
+            self.logger.put(f"链接和删除：开始媒体库刷新···")
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                e = executor.submit(self.emby.refresh_library_by_items, refresh_items)
+            while True:
+                if e.done():
+                    time.sleep(1)
+                    es = e.result()
+                    break
+            if es:
+                self.logger.put(f"链接和删除：媒体库刷新成功！")
+            else:
+                self.logger.put(f"链接和删除：媒体库刷新失败！")
 
-        self.logger.put(f"链接和删除：开始媒体库刷新···")
-        with ThreadPoolExecutor(max_workers=2) as executor:
-            e = executor.submit(self.emby.refresh_library_by_items, refresh_items)
 
         self.logger.put(f"--------------------链删已完成--------------------\n")
 
@@ -885,21 +895,19 @@ if __name__ == "__main__":
         # log_queue.put(info_content + "\n\n")
 
 
-
-
     log_queue.put(None)
     log_thread.join()
 
-
-    title = "影音一条龙"
-    font_color = "white"
-    border_color = "#C8E8FF"
-    title_color = "#2861A1"
-    head_color = "#2861A1"
-    item_color_A = "#64A4E8"
-    item_color_B = "#3871C1"
-    content = notify_template_col4(title, items, font_color, border_color, title_color, head_color, item_color_A, item_color_B, info=info_judge, info_content=info_content, title1="项目", title2="数量(个)")
-    digest = f"{item[0][0]}：{item[0][1]}\n{item[1][0]}：{item[1][1]}\n{item[2][0]}：{item[2][1]}\n{item[3][0]}：{item[3][1]}"
-
-    wecom_app(title, content, digest)
+    if info_judge:
+        title = "影音一条龙"
+        font_color = "white"
+        border_color = "#C8E8FF"
+        title_color = "#2861A1"
+        head_color = "#2861A1"
+        item_color_A = "#64A4E8"
+        item_color_B = "#3871C1"
+        content = notify_template_col4(title, items, font_color, border_color, title_color, head_color, item_color_A, item_color_B, info=info_judge, info_content=info_content, title1="项目", title2="数量(个)")
+        digest = f"{item[0][0]}：{item[0][1]}\n{item[1][0]}：{item[1][1]}\n{item[2][0]}：{item[2][1]}\n{item[3][0]}：{item[3][1]}"
+    
+        wecom_app(title, content, digest)
 
