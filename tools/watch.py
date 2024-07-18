@@ -151,7 +151,7 @@ def process_file_change(q, logger):
                 while not d[0] and retry:
                     retry -= 1
                     logger.put(f"监测到文件状态：文件不在上传列表，等待中···剩余重试次数：{retry}")
-                    time.sleep(5)
+                    time.sleep(2)
                     upload_count = cd2.cd2.GetUploadFileCount().fileCount
                     if upload_count > 150:
                         page = upload_count // 50
