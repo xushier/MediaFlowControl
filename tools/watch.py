@@ -139,8 +139,8 @@ def process_file_change(q, logger):
                     if upload_count > 150:
                         page = upload_count // 50
                         filelist = cd2.task.list(page=page, page_size=50)
-                        filelist.extend(cd2.task.list(page -= 1, page_size=50))
-                        filelist.extend(cd2.task.list(page -= 1, page_size=50))
+                        filelist.extend(cd2.task.list(page = page - 1, page_size=50))
+                        filelist.extend(cd2.task.list(page = page - 1, page_size=50))
                     else:
                         filelist = cd2.task.list()
                     cd2.uplist = filelist
@@ -156,8 +156,8 @@ def process_file_change(q, logger):
                     if upload_count > 150:
                         page = upload_count // 50
                         filelist = cd2.task.list(page=page, page_size=50)
-                        filelist.extend(cd2.task.list(page -= 1, page_size=50))
-                        filelist.extend(cd2.task.list(page -= 1, page_size=50))
+                        filelist.extend(cd2.task.list(page = page - 1, page_size=50))
+                        filelist.extend(cd2.task.list(page = page - 1, page_size=50))
                     else:
                         filelist = cd2.task.list()
                     cd2.uplist = filelist
