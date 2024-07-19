@@ -96,7 +96,7 @@ qb_domain_keyword = {
 
 # QB 失效种子 Tracker 信息关键词
 qb_error_tracker_keyword = [
-    "exist", "anned", "register", "音轨", "压制", "重新上传", "Dupe", "Nuked", "出错"
+    "exist", "anned", "register", "音轨", "压制", "重新上传", "Dupe", "Nuked", "出错", "音轨", "标错"
 ]
 
 # 名称匹配正则
