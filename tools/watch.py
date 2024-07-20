@@ -78,7 +78,7 @@ def process_file_change(q, logger):
                     sys.exit("部分链接的模式为 both，但软链接或 STRM 根路径未设置！")
                 os.makedirs(slink_path, exist_ok=True)
                 os.makedirs(strm_path, exist_ok=True)
-            wecom_app("【实时监控】\n", f"创建文件夹：\n{os.path.basename(event.src_path)}", "", False)
+            # wecom_app("【实时监控】\n", f"创建文件夹：\n{os.path.basename(event.src_path)}", "", False)
         else:
             logger.put(f"监测到文件创建：{os.path.basename(event.src_path)}")
             file_name = os.path.basename(event.src_path)
@@ -129,7 +129,7 @@ def process_file_change(q, logger):
                             if not strm_path:
                                 dl_to_path(event.src_path, strm_path)
                 logger.put(f"元数据下载完成：{os.path.basename(event.src_path)}")
-                wecom_app("【实时监控】\n", f"下载元数据：\n{os.path.basename(event.src_path)}", "", False)
+                # wecom_app("【实时监控】\n", f"下载元数据：\n{os.path.basename(event.src_path)}", "", False)
             else:
                 cloud_path = event.src_path.replace(nas_hlink_root_path, cd2_cloud_root_path)
                 retry = 5
