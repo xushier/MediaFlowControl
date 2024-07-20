@@ -2,7 +2,7 @@
 # _*_ coding:utf-8 _*_
 """
 new Env('小迪 - 网盘影视一条龙');
-*/10 * * * * MediaAM.py
+*/10 * * * * media.py
 """
 
 
@@ -358,7 +358,7 @@ class FileInfo:
 
     
         if position == "hlink":
-            with open('MediaAM.json', 'w', encoding='utf-8') as f:
+            with open('media.json', 'w', encoding='utf-8') as f:
                 json.dump(new_control_dict, f, ensure_ascii=False, indent=4)
             hlink_notify_info = [
                 ('全部的硬链', files_info_count), 
