@@ -169,7 +169,7 @@ def process_file_change(q, logger):
                     wecom_app("【实时监控】\n", f"暂停上传任务：\n{os.path.basename(event.src_path)}", "", False)
                 else:
                     logger.put(f"已重试 5 次，未在上传列表发现文件，跳过该文件。请检查 CD2 监控是否开启！\n")
-                    wecom_app("【实时监控】\n", f"已重试 5 次，未在上传列表发现文件，跳过该文件。请检查 CD2 备份任务开关是否打开！", "", False)
+                    # wecom_app("【实时监控】\n", f"已重试 5 次，未在上传列表发现文件，跳过该文件。请检查 CD2 备份任务开关是否打开！", "", False)
 
 
 def log_writer(log_queue, logger):
