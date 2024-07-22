@@ -120,14 +120,14 @@ def process_file_change(q, logger):
                     mount_path = event.src_path.replace(nas_hlink_root_path, nas_mount_root_path)
                     if os.path.exists(mount_path):
                         if part_link_mode == "slink" and not slink_exist:
-                            dl_to_path(event.src_path, slink_path)
+                            dl_to_path(mount_path, slink_path)
                         if part_link_mode == "strm" and not strm_exist:
-                            dl_to_path(event.src_path, strm_path)
+                            dl_to_path(mount_path, strm_path)
                         if part_link_mode == "both":
                             if not slink_exist:
-                                dl_to_path(event.src_path, slink_path)
+                                dl_to_path(mount_path, slink_path)
                             if not strm_path:
-                                dl_to_path(event.src_path, strm_path)
+                                dl_to_path(mount_path, strm_path)
                 logger.put(f"元数据下载完成：{os.path.basename(event.src_path)}")
                 # wecom_app("【实时监控】\n", f"下载元数据：\n{os.path.basename(event.src_path)}", "", False)
             else:
