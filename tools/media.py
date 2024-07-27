@@ -303,6 +303,7 @@ class FileInfo:
                             process_count = self.control_dict[cd2_cloud_file_path]['process_count']
                             new_control_dict[cd2_cloud_file_path] = {'process_count': process_count, 'upload_time': upload_after_time}
                             self.logger.put(f"初始化程序：该文件处理过 {process_count} 次，上传累计需等待 {upload_after_time} 小时，等待时间过久，启动首传：{file_name}")
+                            self.cd2.task.resume(cd2_cloud_file_path)
                             continue
 
 
