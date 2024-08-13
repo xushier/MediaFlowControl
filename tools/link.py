@@ -409,6 +409,7 @@ if __name__ == "__main__":
             sys.exit("全量链接的模式为 both，但软链接或 STRM 根路径未设置！")
         with ThreadPoolExecutor(max_workers=12) as executor:
             st = executor.submit(strm_folder, mount_path, log_queue)
+        with ThreadPoolExecutor(max_workers=12) as executor:
             sl = executor.submit(slink_folder, mount_path, log_queue)
         while True:
             if st.done() and sl.done():
