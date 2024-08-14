@@ -96,7 +96,7 @@ qb_domain_keyword = {
 
 # QB 失效种子 Tracker 信息关键词
 qb_error_tracker_keyword = [
-    "exist", "anned", "register", "音轨", "压制", "重新上传", "Dupe", "Nuked", "出错", "音轨", "标错"
+    "exist", "anned", "register", "音轨", "压制", "重新", "Dupe", "Nuked", "出错", "音轨", "标错", "错误", "打包"
 ]
 
 # 名称匹配正则
@@ -108,14 +108,14 @@ chinese_pattern = r'^(.*?) ?(S\d+E\d+|(?:\{|\[)tmdb(?:id)?(?:-|=)\d+(?:\}|\]))'
 media_ext = [
     "mp4", "mkv", "m2ts", "iso", "wmv", "3gp", "ts", "flv", 
     "rm", "rmvb", "avi", "mov", "vob", "m4v", "f4v", "webm", 
-    "mpg", "mpeg", "asf", "asx", "dat"
+    "mpg", "mpeg", "asf", "asx", "dat", "flac", "ape", "wav"
     ]
 
 # 下载文件扩展名
 mdata_ext = [
     "nfo", "jpg", "jpeg", "png", "gif", "webp", "txt", "md5", 
     "xml", "srt", "ass", "sup", "mp3", "aac", "doc", "docx", 
-    "pdf", "ssa", "sub", "vtt", "smi"
+    "pdf", "ssa", "sub", "vtt", "smi", "lrc"
     ]
 
 # CD2 上传按发布组的等待时长，单位：小时，若压制组不在以下列表，则以文件大小为基准
