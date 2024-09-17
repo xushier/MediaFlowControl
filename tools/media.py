@@ -737,9 +737,9 @@ class FileInfo:
                 h_sort = "-".join(a)
 
             for info in self.qb.qb_torrents(filter='all'):
-                t_name     = info['name']
-                t_category = info['category']
+                t_category = info['category'].lower()
                 t_hash     = info['hash']
+                h_sort     = h_sort.lower()
                 if t_name == h_name:
                     if h_sort == t_category:
                         break
