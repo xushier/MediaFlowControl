@@ -260,7 +260,7 @@ class FileInfo:
                             series_name = None
                             series_year = None
                             series_tmdb = None
-                        file_info['series_name'] = series_name
+                        file_info['series_name'] = series_name.replace("-", "")
                         file_info['series_year'] = series_year
                         file_info['series_tmdb'] = series_tmdb
                         if not chinese_name_filter(file_name):
@@ -275,7 +275,7 @@ class FileInfo:
                     else:
                         match = re.match(movies_pattern, file_program_name, re.UNICODE)
                         if match:
-                            movies_name = match.group(1)
+                            movies_name = match.group(1).replace("-", "")
                             movies_year = match.group(2)
                             movies_tmdb = match.group(3)
                         else:
