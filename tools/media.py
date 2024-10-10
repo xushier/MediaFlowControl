@@ -736,7 +736,7 @@ class FileInfo:
                 a[0] = f"{new_state}"
                 h_sort = "-".join(a)
 
-            for info in self.qb.qb_torrents(filter='all'):
+            for info in self.qb.qb_torrents(filter='seeding'):
                 t_name     = info['name']
                 t_category = info['category'].lower()
                 t_hash     = info['hash']
