@@ -308,7 +308,7 @@ class FileInfo:
 
 
                     # 持久化
-                    if upload_file_status == 'Transfer' or upload_file_status == 'Inqueue':
+                    if upload_file_status == 'Transfer' or upload_file_status == 'Inqueue' or upload_file_status == 'Error' or upload_file_status == 'FatalError':
                         if cd2_cloud_file_path not in self.control_dict.keys():
                             process_count = 0
                         else:
